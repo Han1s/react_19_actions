@@ -13,40 +13,29 @@ const NameInput = () => {
       setError(error);
       return;
     }
-    // redirect("/path");
   };
 
   return (
-    <div className="xs:w-full lg:w-1/2 pt-20 m-auto px-6">
-      <form>
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-lg font-bold mb-2"
-            htmlFor="username"
-          >
-            Your Name
-          </label>
-          <input
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            className=" border rounded w-full py-2 px-3"
-            type="text"
-            placeholder="Username"
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <button
-            onClick={handleSubmit}
-            disabled={isPending}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            type="button"
-          >
-            Update
-          </button>
-          {!error && <p className="text-red-500">Error updating form!</p>}
-        </div>
-      </form>
-    </div>
+    <form className="flex flex-col gap-4 w-96 m-auto">
+      <label className="text-gray-700" htmlFor="name">
+        Your Name
+      </label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        className="border rounded py-2 px-3"
+      />
+      <button
+        onClick={handleSubmit}
+        type="button"
+        disabled={isPending}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded"
+      >
+        Update
+      </button>
+      {error && <p className="text-red-500">Error updating form!</p>}
+    </form>
   );
 };
 
