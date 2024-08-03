@@ -1,24 +1,24 @@
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { updateName } from "./actions";
 
 const NameInput = () => {
   const [name, setName] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
-  const [isPending, setIsPending] = useState(false);
+
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async () => {
-    setIsPending(true);
     setError(null);
 
-    try {
-      const updatedName = await updateName(inputValue);
-      setName(updatedName);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsPending(false);
-    }
+    startTransition(async () => {
+      try {
+        const updatedName = await updateName(inputValue);
+        setName(updatedName);
+      } catch (error) {
+        setError(error);
+      }
+    });
   };
 
   return (
