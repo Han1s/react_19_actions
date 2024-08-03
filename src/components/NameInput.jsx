@@ -1,17 +1,23 @@
 import { useState } from "react";
+import { updateName } from "./actions";
 
 const NameInput = () => {
   const [name, setName] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
   const [isPending, setIsPending] = useState(false);
 
   const handleSubmit = async () => {
     setIsPending(true);
-    // const error = await updateName(name);
-    setIsPending(false);
-    if (error) {
+    setError(null);
+
+    try {
+      const updatedName = await updateName(inputValue);
+      setName(updatedName);
+    } catch (error) {
       setError(error);
-      return;
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -21,6 +27,7 @@ const NameInput = () => {
         Your Name
       </label>
       <input
+        onChange={(event) => setInputValue(event.target.value)}
         type="text"
         id="name"
         name="name"
@@ -32,9 +39,10 @@ const NameInput = () => {
         disabled={isPending}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded"
       >
-        Update
+        {isPending ? "Loading..." : "Update"}
       </button>
       {error && <p className="text-red-500">Error updating form!</p>}
+      <p>Updated name: {name}</p>
     </form>
   );
 };
