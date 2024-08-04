@@ -1,9 +1,26 @@
 import { useActionState, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { updateName } from "./actions";
+
+const SubmitButton = () => {
+  const { pending, data, method, action } = useFormStatus();
+
+  console.log(data?.get("name"));
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded"
+    >
+      {pending ? "Loading..." : "Update"}
+    </button>
+  );
+};
 
 const NameInput = () => {
   const [name, setName] = useState("");
-  const [error, submitAction, isPending] = useActionState(
+  const [error, submitAction] = useActionState(
     async (_previousReturnValue, formData) => {
       try {
         const updatedName = await updateName(formData.get("name"));
@@ -26,13 +43,7 @@ const NameInput = () => {
         name="name"
         className="border rounded py-2 px-3"
       />
-      <button
-        type="submit"
-        disabled={isPending}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded"
-      >
-        {isPending ? "Loading..." : "Update"}
-      </button>
+      <SubmitButton />
       {error && <p className="text-red-500">{error}</p>}
       <p>Updated name: {name}</p>
     </form>
