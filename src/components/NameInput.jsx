@@ -1,4 +1,4 @@
-import { useActionState, useState } from "react";
+import { useActionState, useState, useOptimistic } from "react";
 import { useFormStatus } from "react-dom";
 import { updateName } from "./actions";
 
@@ -13,17 +13,22 @@ const SubmitButton = () => {
       disabled={pending}
       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded"
     >
-      {pending ? "Loading..." : "Update"}
+      {"Update"}
     </button>
   );
 };
 
 const NameInput = () => {
   const [name, setName] = useState("");
+  const [optimisticName, setOptimisticName] = useOptimistic(name);
+  const [inputValue, setInputValue] = useState("");
+
   const [error, submitAction] = useActionState(
     async (_previousReturnValue, formData) => {
+      const formName = formData.get("name");
+      setOptimisticName(formName);
       try {
-        const updatedName = await updateName(formData.get("name"));
+        const updatedName = await updateName(formName);
         setName(updatedName);
         return null;
       } catch (error) {
@@ -38,6 +43,8 @@ const NameInput = () => {
         Your Name
       </label>
       <input
+        value={inputValue}
+        onChange={(event) => setInputValue(event.target.value)}
         type="text"
         id="name"
         name="name"
@@ -45,7 +52,7 @@ const NameInput = () => {
       />
       <SubmitButton />
       {error && <p className="text-red-500">{error}</p>}
-      <p>Updated name: {name}</p>
+      <p>Updated name: {optimisticName}</p>
     </form>
   );
 };
