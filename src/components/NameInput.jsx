@@ -5,8 +5,6 @@ import { updateName } from "./actions";
 const SubmitButton = () => {
   const { pending, data, method, action } = useFormStatus();
 
-  console.log(data?.get("name"));
-
   return (
     <button
       type="submit"
@@ -20,7 +18,12 @@ const SubmitButton = () => {
 
 const NameInput = () => {
   const [name, setName] = useState("");
-  const [optimisticName, setOptimisticName] = useOptimistic(name);
+  const [optimisticName, setOptimisticName] = useOptimistic(
+    name,
+    (currentState, optimisticValue) => {
+      return optimisticValue + ' (updating...)'
+    }
+  );
   const [inputValue, setInputValue] = useState("");
 
   const [error, submitAction] = useActionState(
